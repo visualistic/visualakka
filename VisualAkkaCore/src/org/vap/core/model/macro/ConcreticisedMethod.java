@@ -210,6 +210,14 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
         return new ConcreticisedMethod("" + getCurrIDInc(), mid, m, null);
     }
 
+    public InstancingType getInstancingType() {
+        return iType;
+    }
+    
+    public SelectorType getSelectorType() {
+        return selType;
+    }
+    
     /**
      * @return the moduleID
      */

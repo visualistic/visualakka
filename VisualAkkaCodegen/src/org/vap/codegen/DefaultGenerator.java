@@ -16,6 +16,7 @@ import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
@@ -32,15 +33,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.openide.util.lookup.ServiceProvider;
-import org.vap.core.Flow;
+import org.ave.core.Flow;
 
-import org.vap.core.Message;
-import org.vap.core.VisualActor;
-import org.vap.core.Node;
-import org.vap.core.VisualProps;
+import org.ave.core.Message;
+import org.ave.core.VisualActor;
+import org.ave.core.Node;
+import org.ave.core.VisualActorImpl;
+import org.ave.core.VisualProps;
+import org.ave.core.exceptions.AVEInternaException;
 
 import org.vap.core.codeexecuter.AbstractGenerator;
-import org.vap.core.exceptions.AVEInternaException;
 import org.vap.core.model.macro.ConcreticisedMethod;
 import org.vap.core.model.macro.Connection;
 import org.vap.core.model.macro.Entry;
@@ -63,15 +65,15 @@ public class DefaultGenerator implements AbstractGenerator {
     private static final String CREATECALLBACK = "createCallback";
     private static final String CREATEDIRECT = "createDirectCall";
 
+    private static final String NEW_DECL = "_NEW";
     private static final String UCB_DECLPREFIX = "_UCB_";
-    private static final String UCB_ABSTRACT = "UCBAbstract";
+    private static final String UCB_ABSTRACT = "UserLogic";
+    private static final String UCB_ABSTRACT_FIELD = "userLogic";
     private static final String UCB_IMPLSUFF = "Impl";
 
     private int cuid = 0;
     private HashMap<String, JVar> vmethargs;
 
-    private JDefinedClass methodsEnum;
-    private Map<String, JEnumConstant> allMethods;
     private JDefinedClass creator = null;
 
     private UnitObject compile(Workspace rawUnit) {
@@ -83,8 +85,6 @@ public class DefaultGenerator implements AbstractGenerator {
     }
 
     private void build(UnitObject unit, String rootFolder) {
-        //TODO: setstate support - DONE, routing support - DONE, supervisor state - DONE,
-        //      virtual static methods and user code blocks support
         try {
             vmethargs = new HashMap<String, JVar>();
             cuid = 0;
@@ -99,33 +99,40 @@ public class DefaultGenerator implements AbstractGenerator {
             JDefinedClass jc = jp._class(unit.moduleName)._extends(jm.ref(VisualActor.class));
 
             File UCBImpl = new File(rootFolder + "/" + unit.modulePackage + "/" + unit.moduleName + UCB_IMPLSUFF + ".java");
-            JDefinedClass uiabs = jc._class(JMod.PUBLIC | JMod.STATIC | JMod.ABSTRACT, UCB_ABSTRACT);
-            JVar ucbVar;
+            JDefinedClass uiabs = jc._class(JMod.PUBLIC | JMod.STATIC | JMod.ABSTRACT, UCB_ABSTRACT)._extends(jm.ref(VisualActorImpl.class));
+            JFieldRef ucbIntVar = JExpr.ref("userCodeImplementation");
 
-            JDefinedClass uimpl = null;
-            if (!UCBImpl.exists()) {
-                uimpl = jp._class(JMod.PUBLIC, unit.moduleName + UCB_IMPLSUFF)._extends(uiabs);
-                uimpl.javadoc().add("User code logic implementation");
-
-                ucbVar = jc.field(JMod.PRIVATE, uiabs, "ucbImplementation", JExpr._new(uimpl));
-
-            } else {
-                ucbVar = jc.field(JMod.PRIVATE, uiabs, "ucbImplementation", JExpr._new(jm.ref(unit.modulePackage + '.' + unit.moduleName + UCB_IMPLSUFF)));
-            }
             /* Adding class level coment */
             JDocComment jDocComment = jc.javadoc();
-            jDocComment.add("Genereted code! DO NOT MODIFY!");
+            jDocComment.add("Generated code! DO NOT MODIFY!");
 
             //boolean isFixedExists = false;
             //JInvocation defthis = JExpr.invoke("this");
             /* Def method enum */
-            methodsEnum = jc._enum("MethodName");
-
+            //methodsEnum = jc._enum("MethodName");
             generateActorCreator(jm, jc);
 
             JMethod cons = jc.constructor(JMod.PUBLIC);
+
+            JDefinedClass uimpl = null;
+            JClass ucbType;
+            if (!UCBImpl.exists()) {
+                uimpl = jp._class(JMod.PUBLIC, unit.moduleName + UCB_IMPLSUFF)._extends(uiabs);
+                uimpl.javadoc().add("User code logic implementation");
+
+                ucbType = uimpl;
+
+            } else {
+                ucbType = jm.ref(unit.modulePackage + '.' + unit.moduleName + UCB_IMPLSUFF);
+            }  
+            
+            JVar ucbVar = jc.field(JMod.PRIVATE, ucbType, UCB_ABSTRACT_FIELD);
+            
+            cons.body().assign(ucbIntVar, JExpr._new(ucbType));
+            cons.body().assign(ucbVar, JExpr.cast(ucbType, ucbIntVar));
+
             JVar visualProps = cons.param(jm.ref(VisualProps.class), "vprops");
-            JVar selectedMethod = cons.param(methodsEnum, "methodName");
+            JVar selectedMethod = cons.param(jm.ref(String.class), "methodName");
             JVar selectedArgs = cons.param(jm.ref(String.class).array(), "methodArgs");
 
             JClass _ca1tp = jm.ref(LinkedList.class).narrow(jm.ref(List.class).narrow(String.class));
@@ -135,8 +142,7 @@ public class DefaultGenerator implements AbstractGenerator {
             JVar _ca2 = cons.body().decl(_ca2tp, "nodes", JExpr._new(_ca2tp));
 
             JSwitch methodSwitch = cons.body()._switch(selectedMethod);
-
-            allMethods = new HashMap<String, JEnumConstant>();
+            JBlock registryInit = methodSwitch._case(JExpr.lit(NEW_DECL)).body();
 
             JMethod callbackHandler = jc.method(JMod.PROTECTED, jm.VOID, "handleCallback");
             callbackHandler.annotate(Override.class);
@@ -170,14 +176,13 @@ public class DefaultGenerator implements AbstractGenerator {
                 for (ConcreticisedMethod block : layer.units) {
                     if (block instanceof UserCodeBlock) {
 
-                        introduceUserCodeBlock(jc, jm, block, methodSwitch, _ca2, _ca1, virtualMethods);
+                        introduceUserCodeBlock(jc, jm, block, methodSwitch, registryInit, _ca2, _ca1, virtualMethods);
                     }
                 }
 
                 String methCodeName = layer.methodName.replace(' ', '_');
-                allMethods.put(methCodeName, methodsEnum.enumConstant(methCodeName));
 
-                JBlock currMethSwith = methodSwitch._case(JExpr.ref(methCodeName)).body();
+                JBlock currMethSwith = methodSwitch._case(JExpr.lit(methCodeName)).body();
 
                 List<String> methodNames = new LinkedList<String>();
                 int entryId = 0;
@@ -189,28 +194,32 @@ public class DefaultGenerator implements AbstractGenerator {
 
                     String defaultV = e.getRefArg().getDefaultValue();
 
+                    JInvocation nodeInv;
+
                     if (e.getRefArg().isFixed()) {
                         //JVar evar = cons.param(String.class, e.getRefArg().getIdentificator());
 //                        defthis.arg(defaultV == null ? "" : defaultV);
 
-                        currMethSwith.add(_ca2.invoke("add").arg(
+                        nodeInv = _ca2.invoke("add").arg(
                                 JExpr._new(jm.ref(Node.class))
                                 .arg(entryName)
                                 .arg(e.getRefArg().getType())
                                 .arg(selectedArgs.component(JExpr.lit(entryId)))
-                                .arg(JExpr.lit(true))));
+                                .arg(JExpr.lit(true)));
 
                         entryId++;
 
-                        //isFixedExists = true;
                     } else {
-                        currMethSwith.add(_ca2.invoke("add").arg(
+                        nodeInv = _ca2.invoke("add").arg(
                                 JExpr._new(jm.ref(Node.class))
                                 .arg(entryName)
                                 .arg(e.getRefArg().getType())
                                 .arg(defaultV == null ? "" : defaultV)
-                                .arg(JExpr.lit(false))));
+                                .arg(JExpr.lit(false)));
                     }
+
+                    currMethSwith.add(nodeInv);
+                    registryInit.add(nodeInv);
                     entriesNames.add(entryName);
                     methodNames.add(entryName);
                 }
@@ -221,8 +230,11 @@ public class DefaultGenerator implements AbstractGenerator {
                     mthNames.add(JExpr.lit(name));
                 }
 
-                currMethSwith.add(_ca1.invoke("add").arg(jm.ref(Arrays.class)
-                        .staticInvoke("asList").arg(mthNames)));
+                JInvocation methInd = _ca1.invoke("add").arg(jm.ref(Arrays.class)
+                        .staticInvoke("asList").arg(mthNames));
+
+                currMethSwith.add(methInd);
+                registryInit.add(methInd);
 
                 currMethSwith._break();
 
@@ -385,36 +397,41 @@ public class DefaultGenerator implements AbstractGenerator {
                         //String uname = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 
                         boolean isRouted = mth.router != null;
+                        boolean isSelf = mth.getSelectorType() == ConcreticisedMethod.SelectorType.Self;
 
                         String methodName = (mth.type == ConcreticisedMethod.CMType.ConcreticisedMethod ? "" : UCB_DECLPREFIX) + mth.getMethodName();
-
-                        JVar dest;
+                                                
+                        JVar dest = null;
                         if (fields.containsKey(name + conn.targetCMID)) {
                             dest = fields.get(name + conn.targetCMID);
-                        } else if (isRouted) {
-                            // getContext().actorOf(new RoundRobinPool(5).props(Props.create(Worker.class)), "router2");
-                            JExpression ini = JExpr.invoke("getContext").invoke("actorOf").
-                                    arg(JExpr._new(jm.ref(mth.router.getLogicPool())).
-                                            arg(JExpr.lit(mth.router.getMinRoutes())).invoke("props").
-                                            arg(getActorRef(jm, mth, moduleName, methodName))).
-                                    arg(name + conn.targetCMID);
+                        } else if (!isSelf) {
+                            JVar actorDecl = postInitHandler.body().decl(jm.ref(Props.class),
+                                    name + conn.targetCMID + "_decl",
+                                    getActorRef(jm, mth, moduleName, methodName));
 
-                            dest = jc.field(JMod.PRIVATE, jm.ref(ActorRef.class),
-                                    name + conn.targetCMID);
+                            dest = jc.field(JMod.PRIVATE, jm.ref(ActorRef.class), name + conn.targetCMID);
+                            JExpression ini;
 
+                            if (isRouted) {
+                                // getContext().actorOf(new RoundRobinPool(5).props(Props.create(Worker.class)), "router2");
+                                ini = JExpr.invoke("getContext").invoke("actorOf").
+                                        arg(JExpr._new(jm.ref(mth.router.getLogicPool())).
+                                                arg(JExpr.lit(mth.router.getMinRoutes())).invoke("props").
+                                                arg(actorDecl)).
+                                        arg(name + conn.targetCMID);
+
+                            } else {
+                                ini = JExpr.invoke("getContext").invoke("actorOf").
+                                        arg(actorDecl).
+                                        arg(name + conn.targetCMID);
+                            }
+                            
                             postInitHandler.body().assign(dest, ini);
 
                             fields.put(name + conn.targetCMID, dest);
-                        } else {
-                            dest = jc.field(JMod.PRIVATE, jm.ref(ActorRef.class), name + conn.targetCMID);
-
-                            postInitHandler.body().assign(dest, JExpr.invoke("getContext").invoke("actorOf").
-                                    arg(getActorRef(jm, mth, moduleName, methodName)).
-                                    arg(name + conn.targetCMID));
-
-                            fields.put(name + conn.targetCMID, dest);
                         }
-                        sendb.add(dest.invoke("tell").arg(sendv.invoke(CREATEDIRECT)
+                        
+                        sendb.add((isSelf ? selfOrRt : dest).invoke("tell").arg(sendv.invoke(CREATEDIRECT)
                                 .arg(name)
                                 .arg(conn.getTargetPinID())
                                 .arg(JExpr.lit(Integer.parseInt(conn.targetCMID)))
@@ -430,13 +447,29 @@ public class DefaultGenerator implements AbstractGenerator {
 //                JMethod defcons = jc.constructor(JMod.PUBLIC);
 //                defcons.body().add(defthis);
 //            }
-            cons.body().invoke("initSupervisor").arg(visualProps.invoke("getSupStrategy")).arg(visualProps.invoke("getSupNumOfRetries")).arg(visualProps.invoke("getSupDuration"));
-            cons.body().add(JExpr.invoke("init").arg(visualProps.invoke("getParentPath")).arg(_ca1).arg(_ca2).arg(JExpr.lit("DEFAULT")));
+            JConditional isFabric = cons.body()._if(selectedMethod.invoke("equals").arg(JExpr.lit(NEW_DECL)));
+            isFabric._then().add(JExpr.invoke("initActorFabric").arg(visualProps).arg(_ca1).arg(_ca2));
+            isFabric._else().invoke("initSupervisor").arg(visualProps.invoke("getSupStrategy")).arg(visualProps.invoke("getSupNumOfRetries")).arg(visualProps.invoke("getSupDuration"));
+            isFabric._else().add(JExpr.invoke("init").arg(visualProps.invoke("getParentPath")).arg(_ca1).arg(_ca2).arg(JExpr.lit("DEFAULT")));
 
             //Adding breaks to the callback handler
             for (JBlock ifBlck : ifBlocks.values()) {
                 ifBlck._break();
             }
+
+            registryInit._break();
+            
+            JMethod selfCreator = jc.method(JMod.PROTECTED, jm.ref(ActorRef.class), "createSelfInstance");
+            JVar selfMethName = selfCreator.param(jm.ref(String.class), "methodName");
+            
+            selfCreator.annotate(jm.ref(Override.class));
+            
+            selfCreator.javadoc().add("Spawn new sub-instance of that actor");
+            selfCreator.javadoc().addParam(selfMethName).add("Method to spawn");
+            
+            selfCreator.body()._return(JExpr.invoke("getContext").invoke("actorOf").
+                                        arg(getSelfActorRef(jm, jc, selfMethName, unit)).
+                                        arg("instance"));
 
             /* Building class at given location */
             File output = new File(rootFolder);
@@ -464,6 +497,7 @@ public class DefaultGenerator implements AbstractGenerator {
     private void introduceUserCodeBlock(JDefinedClass jc, JCodeModel jm,
             ConcreticisedMethod block,
             JSwitch methodSwitch,
+            JBlock registryInit,
             JVar _ca2, JVar _ca1,
             Map<String, JMethod> virtualMethods) {
 
@@ -476,28 +510,33 @@ public class DefaultGenerator implements AbstractGenerator {
         vmethhandler.javadoc().addThrows(AVEInternaException.class).
                 add("Throws when message has an invalid instance.");
 
-        allMethods.put(UCB_DECLPREFIX + block.getMethodName(), methodsEnum.enumConstant(UCB_DECLPREFIX + block.getMethodName()));
-
-        JBlock userBlockSwitch = methodSwitch._case(JExpr.ref(UCB_DECLPREFIX + block.getMethodName())).body();
+        JBlock userBlockSwitch = methodSwitch._case(JExpr.lit(UCB_DECLPREFIX + block.getMethodName())).body();
         JArray mthNames = JExpr.newArray(jm.ref(String.class));
 
         int argId = 0;
         for (Argument arg : block.getRefMeth().getArguments()) {
             String defaultV = arg.getDefaultValue();
-            userBlockSwitch.add(_ca2.invoke("add").arg(
+            JInvocation node = _ca2.invoke("add").arg(
                     JExpr._new(jm.ref(Node.class))
                     .arg(arg.getIdentificator())
                     .arg(arg.getType())
                     .arg(defaultV == null ? "" : defaultV)
-                    .arg(JExpr.lit(arg.isFixed()))));
+                    .arg(JExpr.lit(arg.isFixed())));
+
+            userBlockSwitch.add(node);
+            //registryInit.add(node);
 
             mthNames.add(JExpr.lit(arg.getIdentificator()));
             vmethargs.put(block.getMethodName() + argId, vmethhandler.param(Message.class, arg.getIdentificator()));
 
             argId++;
         }
-        userBlockSwitch.add(_ca1.invoke("add").arg(jm.ref(Arrays.class)
-                .staticInvoke("asList").arg(mthNames)));
+
+        JInvocation meth = _ca1.invoke("add").arg(jm.ref(Arrays.class)
+                .staticInvoke("asList").arg(mthNames));
+
+        userBlockSwitch.add(meth);
+        //registryInit.add(meth);
 
         userBlockSwitch._break();
 
@@ -519,11 +558,11 @@ public class DefaultGenerator implements AbstractGenerator {
         JMethod cons = creator.constructor(JMod.PUBLIC);
 
         JVar parentPath = cons.param(jm.ref(VisualProps.class), "vprops");
-        JVar selectedMethod = cons.param(methodsEnum, "methodName");
+        JVar selectedMethod = cons.param(jm.ref(String.class), "methodName");
         JVar selectedArgs = cons.param(jm.ref(String.class).array(), "methodArgs");
 
         JVar selectedParentPath = creator.field(JMod.PRIVATE | JMod.FINAL, jm.ref(VisualProps.class), "vprops");
-        JVar selectedMethodField = creator.field(JMod.PRIVATE | JMod.FINAL, methodsEnum, "methodName");
+        JVar selectedMethodField = creator.field(JMod.PRIVATE | JMod.FINAL, jm.ref(String.class), "methodName");
         JVar selectedArgsField = creator.field(JMod.PRIVATE | JMod.FINAL, jm.ref(String.class).array(), "methodArgs");
 
         cons.body().assign(JExpr._this().ref(selectedParentPath), parentPath);
@@ -542,23 +581,66 @@ public class DefaultGenerator implements AbstractGenerator {
 
         cr.body()._return(newA);
     }
+    
+    
+    private JExpression getSelfActorRef(JCodeModel jm, JDefinedClass jc, JVar methName, UnitObject unit)
+            throws JClassAlreadyExistsException {
+
+        ConcurrentHashMap<String, String> newdef = new ConcurrentHashMap<String, String>();
+        
+        //XXX: Check correctness
+        for (VFLayer layer : unit.layers) {            
+            for (Entry conn : layer.entries) {
+                if (conn.getRefArg().isFixed()) {
+                    newdef.put(conn.getRefArg().getName(), conn.getRefArg().getDefaultValue());
+                }
+            }
+        }
+
+        JClass actorT = jm.ref(unit.moduleName);
+
+        JInvocation newI = JExpr._new(jm.ref(unit.moduleName + ".Creator"));
+
+        newI.arg(JExpr.ref("fabricProps"));
+
+        newI.arg(methName);
+
+        JArray args = JExpr.newArray(jm.ref(String.class));
+        for (String defValue
+                : newdef.values()) {
+            args.add(JExpr.lit(defValue));
+        }
+
+        newI.arg(args);
+
+        return jm.ref(Props.class
+        ).staticInvoke("create").
+                arg(actorT.staticRef("class")).arg(newI);
+
+    }
 
     private JExpression getActorRef(JCodeModel jm,
             ConcreticisedMethod mth, String module, String method)
             throws JClassAlreadyExistsException {
 
         ConcurrentHashMap<String, String> newdef = mth.getProperties();
-        
+
         JClass actorT = jm.ref(module);
 
         JInvocation newI = JExpr._new(jm.ref(module + ".Creator"));
 
-        JClass enm = jm.ref(module + ".MethodName");
+        //JClass enm = jm.ref(module + ".MethodName");
+        String methBuild = method;
+
+        if (mth.getInstancingType() == ConcreticisedMethod.InstancingType.New) {
+            methBuild = NEW_DECL;
+        }
+
         newI.arg(JExpr._new(jm.ref(VisualProps.class)).arg(JExpr.invoke("getPath")).
                 arg(JExpr.lit(mth.supvisstrat.toString())).
                 arg(JExpr.lit(mth.maxnumofretr)).arg(JExpr.lit(mth.withTimeRange)));
 
-        newI.arg(enm.staticRef(method));
+        newI.arg(JExpr.lit(methBuild));
 
         JArray args = JExpr.newArray(jm.ref(String.class));
         for (String defValue

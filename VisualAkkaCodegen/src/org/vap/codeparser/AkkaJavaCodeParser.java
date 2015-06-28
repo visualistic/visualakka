@@ -74,12 +74,12 @@ public class AkkaJavaCodeParser implements AbstractCodeParser {
 
     @Override
     public ArrayList<String> getTypeNames() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ArrayList<String>();
     }
 
     @Override
     public ArrayList<MethodTree> getMethods() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ArrayList<MethodTree>();
     }
 
 }

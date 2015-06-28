@@ -7,14 +7,6 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
-                    <code-name-base>codemodel</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.netbeans.libs.javacapi</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -64,20 +56,23 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
-                <package>org.vap.ast</package>
                 <package>org.vap.codegen</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/akka-visual.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/akka-visual.jar</binary-origin>
+                <runtime-relative-path>ext/scala-library-2.10.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/scala-library-2.10.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/akka-actor_2.10-2.3.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/akka-actor_2.10-2.3.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/scala-library-2.10.4.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/scala-library-2.10.4.jar</binary-origin>
+                <runtime-relative-path>ext/codemodel-2.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/codemodel-2.6.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/akka-visual.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/akka-visual.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
