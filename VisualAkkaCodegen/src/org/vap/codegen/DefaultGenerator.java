@@ -632,7 +632,7 @@ public class DefaultGenerator implements AbstractGenerator {
         //JClass enm = jm.ref(module + ".MethodName");
         String methBuild = method;
 
-        if (mth.getInstancingType() == ConcreticisedMethod.InstancingType.New) {
+        if (mth.getInstancingType() == ConcreticisedMethod.InstancingType.Prototype) {
             methBuild = NEW_DECL;
         }
 

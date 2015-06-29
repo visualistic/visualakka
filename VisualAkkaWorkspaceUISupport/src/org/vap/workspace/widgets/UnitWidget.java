@@ -41,14 +41,14 @@ public class UnitWidget extends Widget {
         setOpaque(false);
         setLayout(LayoutFactory.createVerticalFlowLayout(LayoutFactory.SerialAlignment.JUSTIFY, 4)); // use vertical layout
 //        LabelWidget methodName = new LabelWidget(this.getScene(), m.getMethodName());
-        TitleWidget methodName = new TitleWidget(this.getScene(), this, m.getMethodName());
+        TitleWidget methodName = new TitleWidget(this.getScene(), this, m.getModuleName());
         methodName.setAlignment(LabelWidget.Alignment.CENTER);
         methodName.setBorder(BorderFactory.createEmptyBorder(5, 2));
         addChild(methodName);
         Widget pinsSeparator = new SeparatorWidget(scene, SeparatorWidget.Orientation.HORIZONTAL);
         addChild(pinsSeparator);
         addChild(new LabelWidget(this.getScene(), m.iType.name()));
-        if (m.router != null && m.iType==ConcreticisedMethod.InstancingType.Static) {
+        if (m.router != null && m.iType==ConcreticisedMethod.InstancingType.Routed) {
             Widget routerWidget = new Widget(scene);
             routerWidget.setLayout(LayoutFactory.createHorizontalFlowLayout(LayoutFactory.SerialAlignment.JUSTIFY, 4));
             routerWidget.addChild(new LabelWidget(this.getScene(), m.router.getLogic().name()));

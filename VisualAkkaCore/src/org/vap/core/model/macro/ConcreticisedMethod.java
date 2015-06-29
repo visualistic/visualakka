@@ -6,6 +6,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -35,32 +36,34 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
 //    public void setProperties(ConcurrentHashMap<String, Property> properties) {
 //        this.properties = properties;
 //    }
-
     /**
      *
      */
-    
     public enum CMType {
 
         /**
          *
          */
         ConcreticisedMethod,
-
         /**
          *
          */
         UCB,
-
         /**
          *
          */
         StaticMethod
     };
-    
-    public enum InstancingType{Static, New};
-    
-    public enum SelectorType{None, Self, All};
+
+    public enum InstancingType {
+
+        Singleton, Prototype, Routed, Self
+    };
+
+    public enum SelectorType {
+
+        None, Self, All
+    };
 
     /**
      * @return the refMeth
@@ -89,22 +92,18 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
          *
          */
         Stop,
-
         /**
          *
          */
         Restart,
-
         /**
          *
          */
         Escalate,
-
         /**
          *
          */
         Resume,
-
         /**
          *
          */
@@ -115,7 +114,6 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
     /**
      *
      */
-    
     public static final DataFlavor DATA_FLAVOR = new DataFlavor(ConcreticisedMethod.class, "CM");
     private String moduleID;
     private String methodName;
@@ -146,9 +144,9 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
      */
     public CMType type = CMType.ConcreticisedMethod;
     //public HashMap<String, String> propertiesToSave = new HashMap();
-    
-    public InstancingType iType = InstancingType.Static;
-    
+
+    public InstancingType iType = InstancingType.Singleton;
+
     public SelectorType selType = SelectorType.None;
 
     /**
@@ -213,16 +211,23 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
     public InstancingType getInstancingType() {
         return iType;
     }
-    
+
     public SelectorType getSelectorType() {
         return selType;
     }
-    
+
     /**
      * @return the moduleID
      */
     public String getModuleID() {
         return moduleID;
+    }
+
+    public String getModuleName() {
+        String[] strs = moduleID.split("\\.");
+        if(strs.length==0)
+            return moduleID;
+        return strs[strs.length - 1];
     }
 
     /**
@@ -300,7 +305,7 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
     public void loadDefaultProperties(boolean reset) {
 //        Method m = getReferencedMethod();
         Method m = getRefMeth();
-        if (reset||getProperties().isEmpty()) {
+        if (reset || getProperties().isEmpty()) {
             for (Argument a : m.getArguments()) {
                 if (a.isFixed()) {
                     getProperties().put(a.getName(), a.getDefaultValue());
@@ -313,14 +318,13 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
 //            }
 //        }
     }
-    
+
 //    public void UpdatePropertiesToSave(){
 //        propertiesToSave = new HashMap();
 //        for(String s: getProperties().keySet()){
 //            propertiesToSave.put(s, getProperties().get(s));
 //        }
 //    }
-
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone(); //To change body of generated methods, choose Tools | Templates.

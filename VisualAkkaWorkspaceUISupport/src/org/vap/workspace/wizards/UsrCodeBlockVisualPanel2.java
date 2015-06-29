@@ -190,13 +190,13 @@ public final class UsrCodeBlockVisualPanel2 extends JPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int[] idx = jList1.getSelectedIndices();
         for (int i = idx.length - 1; i >= 0; i--) {
-            if (!m.getArguments().get(i).isIsMainArg()) {
-                m.getArguments().remove(i);
+            if (!m.getArguments().get(idx[i]).isIsMainArg()) {
+                m.getArguments().remove(idx[i]);
             }
         }
         idx = jList2.getSelectedIndices();
         for (int i = idx.length - 1; i >= 0; i--) {
-            m.getResults().remove(i);
+            m.getResults().remove(idx[i]);
         }
         loadItems();
     }//GEN-LAST:event_jButton2ActionPerformed

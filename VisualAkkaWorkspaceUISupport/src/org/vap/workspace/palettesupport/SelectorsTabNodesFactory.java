@@ -22,7 +22,7 @@ public class SelectorsTabNodesFactory extends ChildFactory<Integer>{
     @Override
     protected boolean createKeys(List<Integer> list) {
         list.add(0);
-        list.add(1);
+        //list.add(1);
         return true;
     }
 
