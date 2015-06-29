@@ -20,7 +20,12 @@ public class unitNode extends AbstractNode {
 
     public ConcreticisedMethod m;
     private WorkspaceScene ws;
+    //Router options
     private Sheet.Set routerSet;
+    //Supervising options
+    private Sheet.Set svstset;
+    //Default values options
+    private Sheet.Set dvset;
     private Sheet sheet;
 
     public unitNode(ConcreticisedMethod m, WorkspaceScene ws) {
@@ -35,11 +40,11 @@ public class unitNode extends AbstractNode {
         sheet = Sheet.createDefault();
         Sheet.Set genset = Sheet.createPropertiesSet();
         genset.put(new InstanceTypeProperty());
-        genset.put(new SelectorTypeProperty());
+        //genset.put(new SelectorTypeProperty());
         genset.setDisplayName("General");
         genset.setName("General");
         sheet.put(genset);
-        Sheet.Set dvset = Sheet.createPropertiesSet();
+        dvset = Sheet.createPropertiesSet();
         for (String k : m.getProperties().keySet()) {
             Property p = new UnitProperty(k);
             try {
@@ -58,7 +63,7 @@ public class unitNode extends AbstractNode {
         sheet.put(dvset);
 //        Property p = new EnumProperty(m.getSs(), "Supervisor strategy", String.class,
 //        "SS", "SS");
-        Sheet.Set svstset = Sheet.createPropertiesSet();
+        svstset = Sheet.createPropertiesSet();
         Property p = new SupVisStratProperty();
         svstset.put(p);
         svstset.put(new WTRProperty());
@@ -69,9 +74,11 @@ public class unitNode extends AbstractNode {
         routerSet = Sheet.createPropertiesSet();
         routerSet.setDisplayName("Routing");
         routerSet.setName("Routing");
-        routerSet.put(new HasRouterProperty());
-        if (m.router != null) {
-            routerSet.put(new RoutingLogicProperty());
+        //routerSet.put(new HasRouterProperty());
+        if (m.router == null) {
+            m.router = new Router();
+        }
+        routerSet.put(new RoutingLogicProperty());
             routerSet.put(new StretchingProperty());
             if (m.router.isIsStretched()) {
                 routerSet.put(new MinRoutesProperty());
@@ -80,17 +87,31 @@ public class unitNode extends AbstractNode {
             } else {
                 routerSet.put(new StaticRoutesProperty());
             }
-        }
         sheet.put(routerSet);
         switch (m.iType) {
-            case New: {
+            case Self: {
+                sheet.remove(routerSet.getName());
+                sheet.remove(dvset.getName());
+                sheet.remove(svstset.getName());
+            }
+            break;
+            case Prototype: {
+                sheet.put(dvset);
+                sheet.put(svstset);
                 sheet.remove(routerSet.getName());
             }
             break;
-            case Static: {
-                sheet.put(routerSet);
+            case Singleton: {
+                sheet.put(dvset);
+                sheet.put(svstset);
+                sheet.remove(routerSet.getName());
             }
             break;
+            case Routed: {
+                sheet.put(dvset);
+                sheet.put(svstset);
+                sheet.put(routerSet);
+            }
         }
         return sheet;
     }
@@ -133,7 +154,7 @@ public class unitNode extends AbstractNode {
     public class InstanceTypeProperty extends PropertySupport.ReadWrite {
 
         public InstanceTypeProperty() {
-            super("Instance type", ConcreticisedMethod.InstancingType.class, "Instance type", "Instance type");
+            super("Actor scope", ConcreticisedMethod.InstancingType.class, "Actor scope", "Actor scope");
 
         }
 
@@ -147,20 +168,35 @@ public class unitNode extends AbstractNode {
             if (m.iType != (ConcreticisedMethod.InstancingType) t) {
                 m.iType = (ConcreticisedMethod.InstancingType) t;
                 switch (m.iType) {
-                    case New: {
+                    case Self: {
+                        sheet.remove(routerSet.getName());
+                        sheet.remove(dvset.getName());
+                        sheet.remove(svstset.getName());
+                    }
+                    break;
+                    case Prototype: {
+                        sheet.put(dvset);
+                        sheet.put(svstset);
                         sheet.remove(routerSet.getName());
                     }
                     break;
-                    case Static: {
-                        sheet.put(routerSet);
+                    case Singleton: {
+                        sheet.put(dvset);
+                        sheet.put(svstset);
+                        sheet.remove(routerSet.getName());
                     }
                     break;
+                    case Routed: {
+                        sheet.put(dvset);
+                        sheet.put(svstset);
+                        sheet.put(routerSet);
+                    }
                 }
                 ws.load();
             }
         }
     }
-    
+
     public class SelectorTypeProperty extends PropertySupport.ReadWrite {
 
         public SelectorTypeProperty() {
@@ -368,6 +404,7 @@ public class unitNode extends AbstractNode {
         @Override
         public void setValue(Object t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             m.router.setMinRoutes((Integer) t);
+            ws.load();
         }
     }
 
