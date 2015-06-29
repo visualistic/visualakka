@@ -9,11 +9,18 @@
                 <y>267</y>
             </loc>
             <supvisstrat>Escalate</supvisstrat>
+            <router>
+                <isStretched>false</isStretched>
+                <logic>RoundRobin</logic>
+                <maxMBCapacity>100</maxMBCapacity>
+                <maxRoutes>0</maxRoutes>
+                <minRoutes>0</minRoutes>
+            </router>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Static</iType>
-            <selType>Self</selType>
+            <iType>Self</iType>
+            <selType>None</selType>
             <properties/>
             <methodName>SelectAction</methodName>
             <moduleID>org.ave.realm.CitizenActor</moduleID>
@@ -38,7 +45,7 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
+            <iType>Singleton</iType>
             <selType>None</selType>
             <properties/>
             <methodName>SelectHighestPriority</methodName>
@@ -92,7 +99,7 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
+            <iType>Singleton</iType>
             <selType>None</selType>
             <properties/>
             <methodName>GoEat</methodName>
@@ -122,7 +129,7 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
+            <iType>Singleton</iType>
             <selType>None</selType>
             <properties/>
             <methodName>GoSleep</methodName>
@@ -152,7 +159,7 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
+            <iType>Singleton</iType>
             <selType>None</selType>
             <properties/>
             <methodName>GoHunt</methodName>
@@ -182,7 +189,7 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
+            <iType>Singleton</iType>
             <selType>None</selType>
             <properties/>
             <methodName>Wandering</methodName>
@@ -209,11 +216,18 @@
                 <y>552</y>
             </loc>
             <supvisstrat>Escalate</supvisstrat>
+            <router>
+                <isStretched>false</isStretched>
+                <logic>RoundRobin</logic>
+                <maxMBCapacity>100</maxMBCapacity>
+                <maxRoutes>0</maxRoutes>
+                <minRoutes>0</minRoutes>
+            </router>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Static</iType>
-            <selType>Self</selType>
+            <iType>Self</iType>
+            <selType>None</selType>
             <properties/>
             <methodName>SelectAction</methodName>
             <moduleID>org.ave.realm.CitizenActor</moduleID>
@@ -238,7 +252,7 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
+            <iType>Singleton</iType>
             <selType>None</selType>
             <properties/>
             <methodName>Communicate</methodName>
@@ -268,7 +282,7 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
+            <iType>Singleton</iType>
             <selType>None</selType>
             <properties/>
             <methodName>MakeFight</methodName>
@@ -295,10 +309,17 @@
                 <y>1029</y>
             </loc>
             <supvisstrat>Resume</supvisstrat>
+            <router>
+                <isStretched>false</isStretched>
+                <logic>RoundRobin</logic>
+                <maxMBCapacity>100</maxMBCapacity>
+                <maxRoutes>0</maxRoutes>
+                <minRoutes>0</minRoutes>
+            </router>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>New</iType>
+            <iType>Prototype</iType>
             <selType>None</selType>
             <properties/>
             <methodName>SelectAction</methodName>
