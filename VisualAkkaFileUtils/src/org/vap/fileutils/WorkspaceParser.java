@@ -74,6 +74,11 @@ public class WorkspaceParser {
                 cm.setLoc(new Point(Integer.parseInt(pointEl.getElementsByTagName("x").item(0).getTextContent().trim()),
                         Integer.parseInt(pointEl.getElementsByTagName("y").item(0).getTextContent().trim())));
                 
+                //actor scope type
+                try{
+                    cm.setActorscope(ue.getElementsByTagName("actorscope").item(0).getTextContent().trim());
+                }catch(Exception e){}
+                
                 //referenced method
                 Element methEl = (Element) ue.getElementsByTagName("refMeth").item(0);
                 Method m = new Method();

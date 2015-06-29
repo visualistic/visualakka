@@ -88,7 +88,7 @@ public class unitNode extends AbstractNode {
                 routerSet.put(new StaticRoutesProperty());
             }
         sheet.put(routerSet);
-        switch (m.iType) {
+        switch (m.getActorscope()) {
             case Self: {
                 sheet.remove(routerSet.getName());
                 sheet.remove(dvset.getName());
@@ -160,14 +160,14 @@ public class unitNode extends AbstractNode {
 
         @Override
         public Object getValue() throws IllegalAccessException, InvocationTargetException {
-            return m.iType;
+            return m.getActorscope();
         }
 
         @Override
         public void setValue(Object t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-            if (m.iType != (ConcreticisedMethod.InstancingType) t) {
-                m.iType = (ConcreticisedMethod.InstancingType) t;
-                switch (m.iType) {
+            if (m.getActorscope() != (ConcreticisedMethod.InstancingType) t) {
+                m.setActorscope(((ConcreticisedMethod.InstancingType) t).name());
+                switch (m.getActorscope()) {
                     case Self: {
                         sheet.remove(routerSet.getName());
                         sheet.remove(dvset.getName());
@@ -205,13 +205,13 @@ public class unitNode extends AbstractNode {
 
         @Override
         public Object getValue() throws IllegalAccessException, InvocationTargetException {
-            return m.selType;
+            return m;
         }
 
         @Override
         public void setValue(Object t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-            if (m.selType != (ConcreticisedMethod.SelectorType) t) {
-                m.selType = (ConcreticisedMethod.SelectorType) t;
+            if (m.getSelType() != (ConcreticisedMethod.SelectorType) t) {
+                m.setSelType((ConcreticisedMethod.SelectorType) t);
                 ws.load();
             }
         }

@@ -30,6 +30,43 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
         return properties;
     }
 
+    /**
+     * @return the actorscope
+     */
+    public InstancingType getActorscope() {
+        return actorscope;
+    }
+
+//    /**
+//     * @param actorscope the actorscope to set
+//     */
+//    public void setActorscope(InstancingType actorscope) {
+//        this.actorscope = actorscope;
+//    }
+    
+    /**
+     * @param actorscope the actorscope to set
+     */
+    public void setActorscope(String actorscope) {
+        this.actorscope = InstancingType.valueOf(actorscope);
+    }
+
+    /**
+     * @return the selType
+     */
+    public SelectorType getSelType() {
+        return selType;
+    }
+
+    /**
+     * @param selType the selType to set
+     */
+    public void setSelType(SelectorType selType) {
+        this.selType = selType;
+    }
+
+    
+
 //    /**
 //     * @param properties the properties to set
 //     */
@@ -54,7 +91,6 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
          */
         StaticMethod
     };
-
     public enum InstancingType {
 
         Singleton, Prototype, Routed, Self
@@ -145,9 +181,10 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
     public CMType type = CMType.ConcreticisedMethod;
     //public HashMap<String, String> propertiesToSave = new HashMap();
 
-    public InstancingType iType = InstancingType.Singleton;
+    protected InstancingType actorscope = InstancingType.Singleton;
+    
 
-    public SelectorType selType = SelectorType.None;
+    protected SelectorType selType = SelectorType.None;
 
     /**
      *
@@ -206,14 +243,6 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
      */
     public static ConcreticisedMethod formCM(Method m, String mid) {
         return new ConcreticisedMethod("" + getCurrIDInc(), mid, m, null);
-    }
-
-    public InstancingType getInstancingType() {
-        return iType;
-    }
-
-    public SelectorType getSelectorType() {
-        return selType;
     }
 
     /**
