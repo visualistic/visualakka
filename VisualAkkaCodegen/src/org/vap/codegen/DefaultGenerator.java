@@ -98,7 +98,7 @@ public class DefaultGenerator implements AbstractGenerator {
             /* Giving Class Name to Generate */
             JDefinedClass jc = jp._class(unit.moduleName)._extends(jm.ref(VisualActor.class));
 
-            File UCBImpl = new File(rootFolder + "/" + unit.modulePackage + "/" + unit.moduleName + UCB_IMPLSUFF + ".java");
+            File UCBImpl = new File(rootFolder + "/" + unit.modulePackage.replace('.', '/') + "/" + unit.moduleName + UCB_IMPLSUFF + ".java");
             JDefinedClass uiabs = jc._class(JMod.PUBLIC | JMod.STATIC | JMod.ABSTRACT, UCB_ABSTRACT)._extends(jm.ref(VisualActorImpl.class));
             JFieldRef ucbIntVar = JExpr.ref("userCodeImplementation");
 
@@ -124,10 +124,10 @@ public class DefaultGenerator implements AbstractGenerator {
 
             } else {
                 ucbType = jm.ref(unit.modulePackage + '.' + unit.moduleName + UCB_IMPLSUFF);
-            }  
-            
+            }
+
             JVar ucbVar = jc.field(JMod.PRIVATE, ucbType, UCB_ABSTRACT_FIELD);
-            
+
             cons.body().assign(ucbIntVar, JExpr._new(ucbType));
             cons.body().assign(ucbVar, JExpr.cast(ucbType, ucbIntVar));
 
@@ -357,7 +357,9 @@ public class DefaultGenerator implements AbstractGenerator {
 
                                     vmethHandler.param(jm.ref(a.getType()), a.getIdentificator());
                                     vmethHandler.javadoc().addParam(a.getIdentificator()).add("Unboxed message data");
-                                    vargs.arg(JExpr.cast(jm.ref(a.getType()), vmethargs.get(mth.getMethodName() + argId).invoke("getData")));
+                                    JExpression data = JExpr.cast(jm.ref(a.getType()), vmethargs.get(mth.getMethodName() + argId).invoke("getData"));
+
+                                    vargs.arg(data);
 
                                     argId++;
                                 }
@@ -400,7 +402,7 @@ public class DefaultGenerator implements AbstractGenerator {
                         boolean isSelf = mth.getSelectorType() == ConcreticisedMethod.SelectorType.Self;
 
                         String methodName = (mth.type == ConcreticisedMethod.CMType.ConcreticisedMethod ? "" : UCB_DECLPREFIX) + mth.getMethodName();
-                                                
+
                         JVar dest = null;
                         if (fields.containsKey(name + conn.targetCMID)) {
                             dest = fields.get(name + conn.targetCMID);
@@ -425,17 +427,42 @@ public class DefaultGenerator implements AbstractGenerator {
                                         arg(actorDecl).
                                         arg(name + conn.targetCMID);
                             }
-                            
+
                             postInitHandler.body().assign(dest, ini);
 
                             fields.put(name + conn.targetCMID, dest);
                         }
-                        
-                        sendb.add((isSelf ? selfOrRt : dest).invoke("tell").arg(sendv.invoke(CREATEDIRECT)
-                                .arg(name)
-                                .arg(conn.getTargetPinID())
-                                .arg(JExpr.lit(Integer.parseInt(conn.targetCMID)))
-                                .arg(JExpr.lit(isRouted))).arg(selfOrRt));
+
+                        if (conn.extractedFieldName != null && !conn.extractedFieldName.isEmpty()) {
+
+                            JExpression dataP;
+                            Entry t = layer.getEntryByName(conn.sourceCMID);
+                            if (t != null) {
+                                dataP = JExpr.cast(jm.ref(t.getRefArg().getType()),
+                                        sendv.invoke("getData"));
+                            } else {
+                                dataP = JExpr.cast(jm.ref(layer
+                                        .getUnitByID(conn.sourceCMID)
+                                        .getRefMeth()
+                                        .getArgumentByName(conn.sourcePinName)
+                                        .getType()),
+                                        sendv.invoke("getData"));
+                            }
+
+                            sendb.add((isSelf ? selfOrRt : dest).invoke("tell").arg(sendv.invoke(CREATEDIRECT)
+                                    .arg(dataP.invoke(conn.extractedFieldName))
+                                    .arg(name)
+                                    .arg(conn.getTargetPinID())
+                                    .arg(JExpr.lit(Integer.parseInt(conn.targetCMID)))
+                                    .arg(JExpr.lit(isRouted))).arg(selfOrRt));
+                        } else {
+                            sendb.add((isSelf ? selfOrRt : dest).invoke("tell").arg(sendv.invoke(CREATEDIRECT)
+                                    .arg(name)
+                                    .arg(conn.getTargetPinID())
+                                    .arg(JExpr.lit(Integer.parseInt(conn.targetCMID)))
+                                    .arg(JExpr.lit(isRouted))).arg(selfOrRt));
+                        }
+
                     } else {
                         //TODO: error log
                         throw new AVEInternaException("Invalid connection!");
@@ -458,18 +485,18 @@ public class DefaultGenerator implements AbstractGenerator {
             }
 
             registryInit._break();
-            
+
             JMethod selfCreator = jc.method(JMod.PROTECTED, jm.ref(ActorRef.class), "createSelfInstance");
             JVar selfMethName = selfCreator.param(jm.ref(String.class), "methodName");
-            
+
             selfCreator.annotate(jm.ref(Override.class));
-            
+
             selfCreator.javadoc().add("Spawn new sub-instance of that actor");
             selfCreator.javadoc().addParam(selfMethName).add("Method to spawn");
-            
+
             selfCreator.body()._return(JExpr.invoke("getContext").invoke("actorOf").
-                                        arg(getSelfActorRef(jm, jc, selfMethName, unit)).
-                                        arg("instance"));
+                    arg(getSelfActorRef(jm, jc, selfMethName, unit)).
+                    arg("instance"));
 
             /* Building class at given location */
             File output = new File(rootFolder);
@@ -505,16 +532,23 @@ public class DefaultGenerator implements AbstractGenerator {
                 jm.VOID,
                 block.getRefMeth().getArguments().get(0).getIdentificator());
 
-        vmethhandler._throws(AVEInternaException.class);
-        vmethhandler.javadoc().add("Virtual method handler for " + block.getMethodName() + " method.");
-        vmethhandler.javadoc().addThrows(AVEInternaException.class).
+        vmethhandler
+                ._throws(AVEInternaException.class
+                );
+        vmethhandler.javadoc()
+                .add("Virtual method handler for " + block.getMethodName() + " method.");
+        vmethhandler.javadoc()
+                .addThrows(AVEInternaException.class
+                ).
                 add("Throws when message has an invalid instance.");
 
         JBlock userBlockSwitch = methodSwitch._case(JExpr.lit(UCB_DECLPREFIX + block.getMethodName())).body();
         JArray mthNames = JExpr.newArray(jm.ref(String.class));
 
         int argId = 0;
-        for (Argument arg : block.getRefMeth().getArguments()) {
+        for (Argument arg
+                : block.getRefMeth()
+                .getArguments()) {
             String defaultV = arg.getDefaultValue();
             JInvocation node = _ca2.invoke("add").arg(
                     JExpr._new(jm.ref(Node.class))
@@ -581,15 +615,14 @@ public class DefaultGenerator implements AbstractGenerator {
 
         cr.body()._return(newA);
     }
-    
-    
+
     private JExpression getSelfActorRef(JCodeModel jm, JDefinedClass jc, JVar methName, UnitObject unit)
             throws JClassAlreadyExistsException {
 
         ConcurrentHashMap<String, String> newdef = new ConcurrentHashMap<String, String>();
-        
+
         //XXX: Check correctness
-        for (VFLayer layer : unit.layers) {            
+        for (VFLayer layer : unit.layers) {
             for (Entry conn : layer.entries) {
                 if (conn.getRefArg().isFixed()) {
                     newdef.put(conn.getRefArg().getName(), conn.getRefArg().getDefaultValue());
