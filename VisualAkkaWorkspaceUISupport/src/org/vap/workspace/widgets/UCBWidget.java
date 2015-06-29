@@ -94,8 +94,8 @@ public class UCBWidget extends UnitWidget{
         
         Widget pinsSeparator = new SeparatorWidget(scene, SeparatorWidget.Orientation.HORIZONTAL);
         addChild(pinsSeparator);
-        addChild(new LabelWidget(this.getScene(), m.iType.name()));
-        if (m.router != null && m.iType==ConcreticisedMethod.InstancingType.Routed) {
+        addChild(new LabelWidget(this.getScene(), m.getActorscope().name()));
+        if (m.router != null && m.getActorscope()==ConcreticisedMethod.InstancingType.Routed) {
             Widget routerWidget = new Widget(scene);
             routerWidget.setLayout(LayoutFactory.createHorizontalFlowLayout(LayoutFactory.SerialAlignment.JUSTIFY, 4));
             routerWidget.addChild(new LabelWidget(this.getScene(), m.router.getLogic().name()));
