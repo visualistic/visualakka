@@ -23,6 +23,8 @@ public class WorldActorImpl
      */
     @Override
     public void GenerateWorldEvent(Boolean GenerateWorldEvent, Flow<Boolean> IsEventGenerated) {
+        System.out.println("World Event: " + GenerateWorldEvent);
+        IsEventGenerated.send(!GenerateWorldEvent);
     }
 
 }

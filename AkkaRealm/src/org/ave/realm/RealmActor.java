@@ -27,6 +27,7 @@ public class RealmActor
     private RealmActorImpl userLogic;
     private ActorRef WorldActor7;
     private ActorRef UserCodeBlocks8;
+    private ActorRef CitizenActor19;
 
     public RealmActor(VisualProps vprops, String methodName, String[] methodArgs) {
         userCodeImplementation = new RealmActorImpl();
@@ -69,7 +70,7 @@ public class RealmActor
     {
         switch (callback.getCallback()) {
             case "__GenerateCitizens8__Output__callback":
-                getSelfRouted(callback).tell(callback.createDirectCall("CitizenActor", "SelectAction", 19, false), getSelfRouted(callback));
+                CitizenActor19 .tell(callback.createDirectCall("CitizenActor", "SelectAction", 19, false), getSelfRouted(callback));
                 break;
         }
     }
@@ -84,6 +85,8 @@ public class RealmActor
         WorldActor7 = getContext().actorOf(WorldActor7_decl, "WorldActor7");
         Props UserCodeBlocks8_decl = Props.create(org.ave.realm.RealmActor.class, new org.ave.realm.RealmActor.Creator(new VisualProps(getPath(), "Escalate", 2147483647, "-1"), "_UCB_GenerateCitizens", new String[] { }));
         UserCodeBlocks8 = getContext().actorOf(UserCodeBlocks8_decl, "UserCodeBlocks8");
+        Props CitizenActor19_decl = Props.create(CitizenActor.class, new org.ave.realm.CitizenActor.Creator(new VisualProps(getPath(), "Resume", 2147483647, "-1"), "_NEW", new String[] { }));
+        CitizenActor19 = getContext().actorOf(CitizenActor19_decl, "CitizenActor19");
     }
 
     /**

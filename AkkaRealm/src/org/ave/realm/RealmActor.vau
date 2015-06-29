@@ -62,9 +62,9 @@
             <cmID>19</cmID>
             <loc>
                 <x>834</x>
-                <y>154</y>
+                <y>159</y>
             </loc>
-            <supvisstrat>Escalate</supvisstrat>
+            <supvisstrat>Resume</supvisstrat>
             <router>
                 <isStretched>false</isStretched>
                 <logic>RoundRobin</logic>
@@ -75,7 +75,7 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Self</iType>
+            <iType>Prototype</iType>
             <selType>None</selType>
             <properties/>
             <methodName>SelectAction</methodName>

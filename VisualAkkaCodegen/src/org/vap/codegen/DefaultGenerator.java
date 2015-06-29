@@ -398,8 +398,8 @@ public class DefaultGenerator implements AbstractGenerator {
                         String name = missRaw[missRaw.length - 1];
                         //String uname = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 
-                        boolean isRouted = mth.getInstancingType() == ConcreticisedMethod.InstancingType.Routed;
-                        boolean isSelf = mth.getInstancingType()== ConcreticisedMethod.InstancingType.Self;
+                        boolean isRouted = mth.getActorscope() == ConcreticisedMethod.InstancingType.Routed;
+                        boolean isSelf = mth.getActorscope()== ConcreticisedMethod.InstancingType.Self;
 
                         String methodName = (mth.type == ConcreticisedMethod.CMType.ConcreticisedMethod ? "" : UCB_DECLPREFIX) + mth.getMethodName();
 
@@ -495,8 +495,7 @@ public class DefaultGenerator implements AbstractGenerator {
             selfCreator.javadoc().addParam(selfMethName).add("Method to spawn");
 
             selfCreator.body()._return(JExpr.invoke("getContext").invoke("actorOf").
-                    arg(getSelfActorRef(jm, jc, selfMethName, unit)).
-                    arg("instance"));
+                    arg(getSelfActorRef(jm, jc, selfMethName, unit)));
 
             /* Building class at given location */
             File output = new File(rootFolder);
@@ -665,7 +664,7 @@ public class DefaultGenerator implements AbstractGenerator {
         //JClass enm = jm.ref(module + ".MethodName");
         String methBuild = method;
 
-        if (mth.getInstancingType() == ConcreticisedMethod.InstancingType.Prototype) {
+        if (mth.getActorscope() == ConcreticisedMethod.InstancingType.Prototype) {
             methBuild = NEW_DECL;
         }
 
