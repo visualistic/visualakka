@@ -269,7 +269,7 @@ public class CitizenActor
      */
     @Override
     protected ActorRef createSelfInstance(String methodName) {
-        return getContext().actorOf(Props.create(CitizenActor.class, new CitizenActor.Creator(fabricProps, methodName, new String[] { })), "instance");
+        return getContext().actorOf(Props.create(CitizenActor.class, new CitizenActor.Creator(fabricProps, methodName, new String[] { })));
     }
 
     public static class Creator

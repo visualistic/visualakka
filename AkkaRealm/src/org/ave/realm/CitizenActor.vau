@@ -9,11 +9,16 @@
                 <y>267</y>
             </loc>
             <supvisstrat>Escalate</supvisstrat>
+            <router>
+                <isStretched>false</isStretched>
+                <logic>RoundRobin</logic>
+                <maxMBCapacity>100</maxMBCapacity>
+                <maxRoutes>0</maxRoutes>
+                <minRoutes>0</minRoutes>
+            </router>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Static</iType>
-            <selType>Self</selType>
             <properties/>
             <methodName>SelectAction</methodName>
             <moduleID>org.ave.realm.CitizenActor</moduleID>
@@ -27,6 +32,7 @@
                 </arguments>
                 <name>SelectAction</name>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>10</cmID>
@@ -38,8 +44,6 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>SelectHighestPriority</methodName>
             <moduleID>System.UserCodeBlocks</moduleID>
@@ -81,6 +85,7 @@
                     <type>org.ave.realm.model.Citizen</type>
                 </results>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>11</cmID>
@@ -89,11 +94,16 @@
                 <y>95</y>
             </loc>
             <supvisstrat>Resume</supvisstrat>
+            <router>
+                <isStretched>false</isStretched>
+                <logic>RoundRobin</logic>
+                <maxMBCapacity>100</maxMBCapacity>
+                <maxRoutes>0</maxRoutes>
+                <minRoutes>0</minRoutes>
+            </router>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>GoEat</methodName>
             <moduleID>System.UserCodeBlocks</moduleID>
@@ -111,6 +121,7 @@
                     <type>org.ave.realm.model.Citizen</type>
                 </results>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>12</cmID>
@@ -122,8 +133,6 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>GoSleep</methodName>
             <moduleID>System.UserCodeBlocks</moduleID>
@@ -141,6 +150,7 @@
                     <type>org.ave.realm.model.Citizen</type>
                 </results>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>13</cmID>
@@ -152,8 +162,6 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>GoHunt</methodName>
             <moduleID>System.UserCodeBlocks</moduleID>
@@ -171,6 +179,7 @@
                     <type>org.ave.realm.model.Citizen</type>
                 </results>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>14</cmID>
@@ -182,8 +191,6 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>Wandering</methodName>
             <moduleID>System.UserCodeBlocks</moduleID>
@@ -201,6 +208,7 @@
                     <type>org.ave.realm.model.Citizen</type>
                 </results>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>15</cmID>
@@ -209,11 +217,16 @@
                 <y>552</y>
             </loc>
             <supvisstrat>Escalate</supvisstrat>
+            <router>
+                <isStretched>false</isStretched>
+                <logic>RoundRobin</logic>
+                <maxMBCapacity>100</maxMBCapacity>
+                <maxRoutes>0</maxRoutes>
+                <minRoutes>0</minRoutes>
+            </router>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Static</iType>
-            <selType>Self</selType>
             <properties/>
             <methodName>SelectAction</methodName>
             <moduleID>org.ave.realm.CitizenActor</moduleID>
@@ -227,6 +240,7 @@
                 </arguments>
                 <name>SelectAction</name>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>16</cmID>
@@ -238,8 +252,6 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>Communicate</methodName>
             <moduleID>System.UserCodeBlocks</moduleID>
@@ -257,6 +269,7 @@
                     <type>org.ave.realm.model.Citizen</type>
                 </results>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>17</cmID>
@@ -268,8 +281,6 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>MakeFight</methodName>
             <moduleID>System.UserCodeBlocks</moduleID>
@@ -287,6 +298,7 @@
                     <type>org.ave.realm.model.Citizen</type>
                 </results>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>18</cmID>
@@ -295,11 +307,16 @@
                 <y>1029</y>
             </loc>
             <supvisstrat>Resume</supvisstrat>
+            <router>
+                <isStretched>false</isStretched>
+                <logic>RoundRobin</logic>
+                <maxMBCapacity>100</maxMBCapacity>
+                <maxRoutes>0</maxRoutes>
+                <minRoutes>0</minRoutes>
+            </router>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>New</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>SelectAction</methodName>
             <moduleID>org.ave.realm.CitizenActor</moduleID>
@@ -313,12 +330,13 @@
                 </arguments>
                 <name>SelectAction</name>
             </refMeth>
+            <selType>None</selType>
         </units>
         <entries>
             <cmID>0</cmID>
             <loc>
-                <x>29</x>
-                <y>559</y>
+                <x>22</x>
+                <y>564</y>
             </loc>
             <refArg>
                 <name>SelectAction</name>

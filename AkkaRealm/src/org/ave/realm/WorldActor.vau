@@ -9,11 +9,18 @@
                 <y>292</y>
             </loc>
             <supvisstrat>Escalate</supvisstrat>
+            <router>
+                <isStretched>false</isStretched>
+                <logic>RoundRobin</logic>
+                <maxMBCapacity>100</maxMBCapacity>
+                <maxRoutes>0</maxRoutes>
+                <minRoutes>0</minRoutes>
+            </router>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Static</iType>
-            <selType>Self</selType>
+            <iType>Self</iType>
+            <selType>None</selType>
             <properties/>
             <methodName>Update</methodName>
             <moduleID>org.ave.realm.WorldActor</moduleID>
@@ -31,14 +38,14 @@
         <units>
             <cmID>6</cmID>
             <loc>
-                <x>365</x>
-                <y>289</y>
+                <x>360</x>
+                <y>254</y>
             </loc>
             <supvisstrat>Restart</supvisstrat>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
+            <iType>Singleton</iType>
             <selType>None</selType>
             <properties/>
             <methodName>GenerateWorldEvent</methodName>
@@ -97,5 +104,8 @@
     <refModulePackage>org.ave.realm</refModulePackage>
     <states>
         <name>Default</name>
+    </states>
+    <states>
+        <name>Update</name>
     </states>
 </ns2:local>

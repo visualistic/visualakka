@@ -9,7 +9,12 @@ import java.io.Serializable;
  */
 public class CreateRealm implements Serializable {
     
-    private int citizensCount;
+    private final int citizensCount;
+
+    public CreateRealm(int citizensCount) {
+        this.citizensCount = citizensCount;
+    } 
+    
     
     public boolean getInitialWorldState() {
         return false;
@@ -20,12 +25,5 @@ public class CreateRealm implements Serializable {
      */
     public int getCitizensCount() {
         return citizensCount;
-    }
-
-    /**
-     * @param citizensCount the citizensCount to set
-     */
-    public void setCitizensCount(int citizensCount) {
-        this.citizensCount = citizensCount;
     }
 }

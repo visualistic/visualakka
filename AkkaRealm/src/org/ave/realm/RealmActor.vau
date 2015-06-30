@@ -5,14 +5,14 @@
         <units>
             <cmID>7</cmID>
             <loc>
-                <x>440</x>
-                <y>428</y>
+                <x>423</x>
+                <y>413</y>
             </loc>
             <supvisstrat>Resume</supvisstrat>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Static</iType>
+            <iType>Singleton</iType>
             <selType>None</selType>
             <properties/>
             <methodName>Update</methodName>
@@ -31,14 +31,14 @@
         <units>
             <cmID>8</cmID>
             <loc>
-                <x>426</x>
+                <x>411</x>
                 <y>139</y>
             </loc>
             <supvisstrat>Escalate</supvisstrat>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Static</iType>
+            <iType>Singleton</iType>
             <selType>None</selType>
             <properties/>
             <methodName>GenerateCitizens</methodName>
@@ -62,13 +62,20 @@
             <cmID>19</cmID>
             <loc>
                 <x>834</x>
-                <y>154</y>
+                <y>159</y>
             </loc>
-            <supvisstrat>Escalate</supvisstrat>
+            <supvisstrat>Resume</supvisstrat>
+            <router>
+                <isStretched>false</isStretched>
+                <logic>RoundRobin</logic>
+                <maxMBCapacity>100</maxMBCapacity>
+                <maxRoutes>0</maxRoutes>
+                <minRoutes>0</minRoutes>
+            </router>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Static</iType>
+            <iType>Prototype</iType>
             <selType>None</selType>
             <properties/>
             <methodName>SelectAction</methodName>
