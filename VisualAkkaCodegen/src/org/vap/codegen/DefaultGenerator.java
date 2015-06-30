@@ -399,7 +399,7 @@ public class DefaultGenerator implements AbstractGenerator {
                         //String uname = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 
                         boolean isRouted = mth.router != null;
-                        boolean isSelf = mth.getSelType() == ConcreticisedMethod.SelectorType.Self;
+                        boolean isSelf = mth.selType == ConcreticisedMethod.SelectorType.Self;
 
                         String methodName = (mth.type == ConcreticisedMethod.CMType.ConcreticisedMethod ? "" : UCB_DECLPREFIX) + mth.getMethodName();
 
@@ -665,7 +665,7 @@ public class DefaultGenerator implements AbstractGenerator {
         //JClass enm = jm.ref(module + ".MethodName");
         String methBuild = method;
 
-        if (mth.getActorscope() == ConcreticisedMethod.InstancingType.Prototype) {
+        if (mth.actorscope == ConcreticisedMethod.InstancingType.Prototype) {
             methBuild = NEW_DECL;
         }
 

@@ -30,43 +30,6 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
         return properties;
     }
 
-    /**
-     * @return the actorscope
-     */
-    public InstancingType getActorscope() {
-        return actorscope;
-    }
-
-//    /**
-//     * @param actorscope the actorscope to set
-//     */
-//    public void setActorscope(InstancingType actorscope) {
-//        this.actorscope = actorscope;
-//    }
-    
-    /**
-     * @param actorscope the actorscope to set
-     */
-    public void setActorscope(String actorscope) {
-        this.actorscope = InstancingType.valueOf(actorscope);
-    }
-
-    /**
-     * @return the selType
-     */
-    public SelectorType getSelType() {
-        return selType;
-    }
-
-    /**
-     * @param selType the selType to set
-     */
-    public void setSelType(SelectorType selType) {
-        this.selType = selType;
-    }
-
-    
-
 //    /**
 //     * @param properties the properties to set
 //     */
@@ -181,10 +144,10 @@ public class ConcreticisedMethod extends WorkspaceObject implements Transferable
     public CMType type = CMType.ConcreticisedMethod;
     //public HashMap<String, String> propertiesToSave = new HashMap();
 
-    protected InstancingType actorscope = InstancingType.Singleton;
+    public InstancingType actorscope = InstancingType.Singleton;
     
 
-    protected SelectorType selType = SelectorType.None;
+    public SelectorType selType = SelectorType.None;
 
     /**
      *

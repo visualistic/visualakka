@@ -792,7 +792,7 @@ public final class WorkspaceScene extends GraphPinScene<String, String, String> 
                     Module mod = ws.formModule();
                     ConcreticisedMethod m = ConcreticisedMethod.formCM(mod.
                             getMethodByName(ws.getActiveLayer().methodName), mod.toString());
-                    m.setSelType(ConcreticisedMethod.SelectorType.Self);
+                    m.actorscope = ConcreticisedMethod.InstancingType.Self;
                     dtde.acceptDrop(DnDConstants.ACTION_COPY);
                     m.loadDefaultProperties(true);
                     m.setLoc(new org.vap.core.model.micro.Point(dtde.getLocation()));
