@@ -116,7 +116,7 @@ public class WorldActor
      */
     @Override
     protected ActorRef createSelfInstance(String methodName) {
-        return getContext().actorOf(Props.create(WorldActor.class, new WorldActor.Creator(fabricProps, methodName, new String[] { })), "instance");
+        return getContext().actorOf(Props.create(WorldActor.class, new WorldActor.Creator(fabricProps, methodName, new String[] { })));
     }
 
     public static class Creator

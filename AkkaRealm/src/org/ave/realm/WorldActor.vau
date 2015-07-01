@@ -19,7 +19,7 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Self</iType>
+            <actorscope>Self</actorscope>
             <selType>None</selType>
             <properties/>
             <methodName>Update</methodName>
@@ -45,7 +45,7 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Singleton</iType>
+            <actorscope>Singleton</actorscope>
             <selType>None</selType>
             <properties/>
             <methodName>GenerateWorldEvent</methodName>
