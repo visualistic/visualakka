@@ -32,8 +32,8 @@ import org.vap.workspace.wizards.UsrCodeBlockWizardAction;
  *
  * @author Oleg Bantysh
  */
-public class UCBWidget extends UnitWidget{
-    
+public class UCBWidget extends UnitWidget {
+
     private UserCodeBlock ucb;
 
     public UCBWidget(Scene scene, UserCodeBlock m, MoveProvider provider) {
@@ -46,7 +46,7 @@ public class UCBWidget extends UnitWidget{
         methodName.setAlignment(LabelWidget.Alignment.CENTER);
         methodName.setBorder(BorderFactory.createEmptyBorder(5, 2));
         //addChild(methodName);
-        
+
         Widget titleField = new Widget(this.getScene());
         titleField.setLayout(LayoutFactory.createHorizontalFlowLayout(LayoutFactory.SerialAlignment.JUSTIFY, 1));
         JButton editBtn = new JButton("Edit");
@@ -58,7 +58,7 @@ public class UCBWidget extends UnitWidget{
             public void actionPerformed(ActionEvent e) {
                 Method meth = UsrCodeBlockWizardAction.requestForModifiedUCB(ucb.getRefMeth());
                 ucb.UpdateName();
-                ((WorkspaceScene)UCBWidget.this.getScene()).load();
+                ((WorkspaceScene) UCBWidget.this.getScene()).load();
             }
         });
         ComponentWidget editBtnWg = new ComponentWidget(scene, editBtn);
@@ -68,8 +68,8 @@ public class UCBWidget extends UnitWidget{
         titleField.addChild(editBtnWgEmpty);
         titleField.addChild(methodName);
         titleField.addChild(editBtnWg);
-        addChild(titleField);   
-        
+        addChild(titleField);
+
         methodName.getActions().addAction(ActionFactory.createMoveAction(new MoveStrategy() {
 
             @Override
@@ -91,11 +91,11 @@ public class UCBWidget extends UnitWidget{
             }
 //        }, ActionFactory.createDefaultMoveProvider()));
         }, provider));
-        
+
         Widget pinsSeparator = new SeparatorWidget(scene, SeparatorWidget.Orientation.HORIZONTAL);
         addChild(pinsSeparator);
         addChild(new LabelWidget(this.getScene(), m.getActorscope().name()));
-        if (m.router != null && m.getActorscope()==ConcreticisedMethod.InstancingType.Routed) {
+        if (m.router != null && m.getActorscope() == ConcreticisedMethod.InstancingType.Routed) {
             Widget routerWidget = new Widget(scene);
             routerWidget.setLayout(LayoutFactory.createHorizontalFlowLayout(LayoutFactory.SerialAlignment.JUSTIFY, 4));
             routerWidget.addChild(new LabelWidget(this.getScene(), m.router.getLogic().name()));
@@ -108,13 +108,13 @@ public class UCBWidget extends UnitWidget{
             addChild(routerWidget);
             Widget pinsSeparator1 = new SeparatorWidget(scene, SeparatorWidget.Orientation.HORIZONTAL);
             addChild(pinsSeparator1);
-        } 
+        }
 //        else {
 //            LabelWidget noRouter = new LabelWidget(this.getScene(), "(no router)");
 //            noRouter.setAlignment(LabelWidget.Alignment.CENTER);
 //            addChild(noRouter);
 //        }
-        
+
         Widget methodField = new Widget(this.getScene());
         methodField.setLayout(LayoutFactory.createVerticalFlowLayout(LayoutFactory.SerialAlignment.JUSTIFY, 4)); // use vertical layout
         parameterField = new Widget(this.getScene());
@@ -128,9 +128,12 @@ public class UCBWidget extends UnitWidget{
         methodField.addChild(exitsField);
         methodField.setBorder(BorderFactory.createEmptyBorder(5));
         addChild(methodField);
+//        setBorder(VMDFactory.createVMDNodeBorder(new Color(63, 67, 173), 2, new Color(199, 215, 224),
+//                new Color(199, 215, 224), new Color(199, 215, 224), new Color(199, 215, 224),
+//                new Color(199, 215, 224)));
         setBorder(VMDFactory.createVMDNodeBorder(new Color(63, 67, 173), 2, new Color(199, 215, 224),
-                new Color(199, 215, 224), new Color(199, 215, 224), new Color(199, 215, 224),
-                new Color(199, 215, 224)));
+                new Color(199, 215, 224), new Color(186, 214, 247), new Color(186, 214, 247),
+                new Color(186, 214, 247)));
         setToolTipText("ID " + m.getCmID() + "  Package " + m.getModuleID());
     }
 
@@ -162,7 +165,7 @@ public class UCBWidget extends UnitWidget{
 //                value = new LabelWidget(this.getScene(), ": (No value)"
 //                        + " (" + ((Argument) p).getType() + ")");
 //            }
-                value = new LabelWidget(this.getScene(), " (" + ((Argument) p).getType() + ")");
+            value = new LabelWidget(this.getScene(), " (" + ((Argument) p).getType() + ")");
             value.setForeground(Color.gray);
             w.addChild(value);
             parameterField.addChild(w);
@@ -206,9 +209,9 @@ public class UCBWidget extends UnitWidget{
         w.addChild(value);
         parameterField.addChild(w);
     }
-    
-    private void UpdateAfterEdit(){
-        
+
+    private void UpdateAfterEdit() {
+
     }
-    
+
 }
