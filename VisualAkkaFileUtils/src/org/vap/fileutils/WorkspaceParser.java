@@ -76,7 +76,7 @@ public class WorkspaceParser {
                 
                 //actor scope type
                 try{
-                    cm.setActorscope(ue.getElementsByTagName("actorscope").item(0).getTextContent().trim());
+                    cm.actorscope = ConcreticisedMethod.InstancingType.valueOf(ue.getElementsByTagName("actorscope").item(0).getTextContent().trim());
                 }catch(Exception e){}
                 
                 //referenced method
