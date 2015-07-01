@@ -11,6 +11,11 @@ import org.ave.realm.model.CreateRealm;
 public class RealmActorImpl
         extends org.ave.realm.RealmActor.UserLogic {
 
+    private static int nextId;
+    public static int getNextId() {
+        return nextId++;
+    }
+    
     /**
      * User code block implementation for - GenerateCitizens.
      *
@@ -20,6 +25,8 @@ public class RealmActorImpl
     @Override
     public void GenerateCitizens(CreateRealm GenerateCitizens, Flow<Citizen> Output) {
         System.out.println("Generating citizens: started");
+        nextId = GenerateCitizens.getCitizensCount();
+        
         for (int i = 0; i < GenerateCitizens.getCitizensCount(); i++) {
             Output.send(new Citizen(i, i % 2 == 0, i, i));
         }

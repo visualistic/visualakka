@@ -90,8 +90,8 @@
         <units>
             <cmID>11</cmID>
             <loc>
-                <x>849</x>
-                <y>95</y>
+                <x>684</x>
+                <y>90</y>
             </loc>
             <supvisstrat>Resume</supvisstrat>
             <router>
@@ -303,7 +303,7 @@
         <units>
             <cmID>18</cmID>
             <loc>
-                <x>830</x>
+                <x>829</x>
                 <y>1029</y>
             </loc>
             <supvisstrat>Resume</supvisstrat>

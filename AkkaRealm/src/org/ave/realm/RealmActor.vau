@@ -5,15 +5,13 @@
         <units>
             <cmID>7</cmID>
             <loc>
-                <x>423</x>
-                <y>413</y>
+                <x>419</x>
+                <y>419</y>
             </loc>
             <supvisstrat>Resume</supvisstrat>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Singleton</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>Update</methodName>
             <moduleID>org.ave.realm.WorldActor</moduleID>
@@ -27,19 +25,18 @@
                 </arguments>
                 <name>Update</name>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>8</cmID>
             <loc>
-                <x>411</x>
-                <y>139</y>
+                <x>410</x>
+                <y>112</y>
             </loc>
             <supvisstrat>Escalate</supvisstrat>
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>UCB</type>
-            <iType>Singleton</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>GenerateCitizens</methodName>
             <moduleID>System.UserCodeBlocks</moduleID>
@@ -57,12 +54,13 @@
                     <type>org.ave.realm.model.Citizen</type>
                 </results>
             </refMeth>
+            <selType>None</selType>
         </units>
         <units>
             <cmID>19</cmID>
             <loc>
-                <x>834</x>
-                <y>159</y>
+                <x>820</x>
+                <y>152</y>
             </loc>
             <supvisstrat>Resume</supvisstrat>
             <router>
@@ -75,8 +73,6 @@
             <withTimeRange>-1</withTimeRange>
             <maxnumofretr>2147483647</maxnumofretr>
             <type>ConcreticisedMethod</type>
-            <iType>Prototype</iType>
-            <selType>None</selType>
             <properties/>
             <methodName>SelectAction</methodName>
             <moduleID>org.ave.realm.CitizenActor</moduleID>
@@ -90,6 +86,7 @@
                 </arguments>
                 <name>SelectAction</name>
             </refMeth>
+            <selType>None</selType>
         </units>
         <entries>
             <cmID>0</cmID>

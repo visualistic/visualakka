@@ -399,7 +399,7 @@ public class DefaultGenerator implements AbstractGenerator {
                         //String uname = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 
                         boolean isRouted = mth.getActorscope() == ConcreticisedMethod.InstancingType.Routed;
-                        boolean isSelf = mth.getActorscope()== ConcreticisedMethod.InstancingType.Self;
+                        boolean isSelf = mth.getActorscope() == ConcreticisedMethod.InstancingType.Self;
 
                         String methodName = (mth.type == ConcreticisedMethod.CMType.ConcreticisedMethod ? "" : UCB_DECLPREFIX) + mth.getMethodName();
 
@@ -531,14 +531,9 @@ public class DefaultGenerator implements AbstractGenerator {
                 jm.VOID,
                 block.getRefMeth().getArguments().get(0).getIdentificator());
 
-        vmethhandler
-                ._throws(AVEInternaException.class
-                );
-        vmethhandler.javadoc()
-                .add("Virtual method handler for " + block.getMethodName() + " method.");
-        vmethhandler.javadoc()
-                .addThrows(AVEInternaException.class
-                ).
+        vmethhandler._throws(AVEInternaException.class);
+        vmethhandler.javadoc().add("Virtual method handler for " + block.getMethodName() + " method.");
+        vmethhandler.javadoc().addThrows(AVEInternaException.class).
                 add("Throws when message has an invalid instance.");
 
         JBlock userBlockSwitch = methodSwitch._case(JExpr.lit(UCB_DECLPREFIX + block.getMethodName())).body();

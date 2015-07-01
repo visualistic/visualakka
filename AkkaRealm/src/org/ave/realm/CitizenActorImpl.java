@@ -4,7 +4,7 @@ import org.ave.core.Flow;
 import org.ave.realm.model.Citizen;
 
 /**
- * User code logic implementation Hello
+ * User code logic implementation
  */
 public class CitizenActorImpl
         extends org.ave.realm.CitizenActor.UserLogic {
@@ -94,12 +94,14 @@ public class CitizenActorImpl
             Flow<org.ave.realm.model.Citizen> Communicate,
             Flow<org.ave.realm.model.Citizen> Fight,
             Flow<org.ave.realm.model.Citizen> Child) {
-        System.out.println("SelectHighestPriority: started for " + citizen.getId());
+        //System.out.println("SelectHighestPriority: started for " + citizen.getId());
 
         if (citizen.getHungriness() < 0.5f) {
             Eat.send(citizen);
         } else if (citizen.getHappiness() > 0.5f && !citizen.isIsMale()) {
-            Child.send(new Citizen(citizen.getId(), true, 0, 1, 0f, 0f));
+            int nid = RealmActorImpl.getNextId();
+            System.out.println("Create child: for " + citizen.getId() + " id " + nid);
+            Child.send(new Citizen(nid, true, 0, 1, 0f, 0f));
             Wander.send(citizen.newState(0f, 0f));
         } else {
             Wander.send(citizen);

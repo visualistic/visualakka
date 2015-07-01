@@ -85,7 +85,7 @@ public class RealmActor
         WorldActor7 = getContext().actorOf(WorldActor7_decl, "WorldActor7");
         Props UserCodeBlocks8_decl = Props.create(org.ave.realm.RealmActor.class, new org.ave.realm.RealmActor.Creator(new VisualProps(getPath(), "Escalate", 2147483647, "-1"), "_UCB_GenerateCitizens", new String[] { }));
         UserCodeBlocks8 = getContext().actorOf(UserCodeBlocks8_decl, "UserCodeBlocks8");
-        Props CitizenActor19_decl = Props.create(CitizenActor.class, new org.ave.realm.CitizenActor.Creator(new VisualProps(getPath(), "Resume", 2147483647, "-1"), "_NEW", new String[] { }));
+        Props CitizenActor19_decl = Props.create(CitizenActor.class, new org.ave.realm.CitizenActor.Creator(new VisualProps(getPath(), "Resume", 2147483647, "-1"), "SelectAction", new String[] { }));
         CitizenActor19 = getContext().actorOf(CitizenActor19_decl, "CitizenActor19");
     }
 
@@ -124,7 +124,7 @@ public class RealmActor
      */
     @Override
     protected ActorRef createSelfInstance(String methodName) {
-        return getContext().actorOf(Props.create(RealmActor.class, new RealmActor.Creator(fabricProps, methodName, new String[] { })), "instance");
+        return getContext().actorOf(Props.create(RealmActor.class, new RealmActor.Creator(fabricProps, methodName, new String[] { })));
     }
 
     public static class Creator
