@@ -28,8 +28,15 @@ public class Main {
         VisualProps props = new VisualProps("/user/", VisualActor.ESCALATE, Integer.MAX_VALUE, "-1");
         ActorRef realm = sys.actorOf(Props.create(RealmActor.class, new RealmActor.Creator(props, "Start", new String[] { })), "Realm");
         
-        Message m1 = new Message(new CreateRealm(10), "RealmActor", "Start", 0, false);
-
-        realm.tell(m1, ActorRef.noSender());       
+        
+        ActorRef sum = sys.actorOf(Props.create(Sum.class, new Sum.Creator(props, "A", new String[] { })), "Sum");
+        Message a = new Message(new Float(5f), "Sum", "A", 0, false);
+        Message b = new Message(new Float(7f), "Sum", "B", 0, false);
+        
+        sum.tell(a, ActorRef.noSender());
+        sum.tell(b, ActorRef.noSender());
+//        Message m1 = new Message(new CreateRealm(10), "RealmActor", "Start", 0, false);
+//
+//        realm.tell(m1, ActorRef.noSender());       
     }
 }
